@@ -1,58 +1,36 @@
+from grid import Grid, GridLookup
+
+ROW_LENGTH = 10000
+INDEX_LENGTH = 4
 
 
 class WordSearch(object):
 
-    ROW_LENGTH = 4
-
-    def __init__(self, grid):
-        self.grid = grid
-        self.grid_lookup = {}
-
-        for index, letter in enumerate(grid):
-            if letter not in self.grid_lookup:
-                self.grid_lookup[letter] = [index]
-            else:
-                self.grid_lookup[letter].append(index)
+    def __init__(self, grid, row_length=ROW_LENGTH, index_length=INDEX_LENGTH):
+        self.grid = Grid(grid, row_length)
+        self.grid_lookup = GridLookup(self.grid, index_length)
 
     def is_present(self, word):
-        if word and word[0] in self.grid_lookup:
-            for index in self.grid_lookup[word[0]]:
-                if self._check_row(index, word) or \
-                        self._check_column(index, word):
+        word = word.strip().lower()
+        if len(word) <= self.grid_lookup.max_word_length:
+            return self.grid_lookup.is_present(word)
+        else:
+            for grid_index in self.grid_lookup.get_grid_indexes(word):
+                if self.grid.is_present_in_row(grid_index, word) or \
+                        self.grid.is_present_in_column(grid_index, word):
                     return True
-
-    def _check_row(self, index, word):
-        row_position = index % WordSearch.ROW_LENGTH
-        return self._check_word(index, word, 1, row_position)
-
-    def _check_column(self, index, word):
-        column_position = index / WordSearch.ROW_LENGTH
-        return self._check_word(
-            index, word, WordSearch.ROW_LENGTH, column_position)
-
-    def _check_word(self, index, word, increment, test):
-        for i, letter in enumerate(word):
-            if test is WordSearch.ROW_LENGTH or letter is not self.grid[index]:
-                return False
-            index += increment
-            test += 1
-        return True
 
 
 if __name__ == '__main__':
 
-    grid = 'abcdjejddedeeaee'
+    with open('grid') as rp:
+        grid = rp.read()
 
-    words = [
-        'abc',
-        'eeee',
-        'jej',
-        'ajd',
-        'cdj'
-    ]
+    with open('/usr/share/dict/words') as rp:
+        words_to_find = rp.readlines()
 
     ws = WordSearch(grid)
 
-    for word in words:
+    for word in words_to_find:
         if ws.is_present(word):
-            print 'found: {}'.format(word)
+            print 'Found: {}'.format(word)

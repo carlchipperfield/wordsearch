@@ -6,11 +6,12 @@ class MyTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        grid = 'abcd' \
-               'efgh' \
-               'ijee' \
-               'kfkr'
-        cls.ws = WordSearch(grid)
+        grid = 'abcdj' \
+               'efghm' \
+               'ijeen' \
+               'kfkrj' \
+               'kfkbc'
+        cls.ws = WordSearch(grid, row_length=5)
 
     def test_empty_word(self):
         self.assertFalse(self.ws.is_present(''))
@@ -25,19 +26,20 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(self.ws.is_present('dhe'))
 
     def test_row_max(self):
-        self.assertTrue(self.ws.is_present('efgh'))
+        self.assertTrue(self.ws.is_present('efghm'))
 
     def test_column_max(self):
-        self.assertTrue(self.ws.is_present('ijee'))
+        self.assertTrue(self.ws.is_present('bfjff'))
 
     def test_longer_than_row(self):
-        self.assertFalse(self.ws.is_present('efghaa'))
+        self.assertFalse(self.ws.is_present('efghmaa'))
 
     def test_longer_than_column(self):
-        self.assertFalse(self.ws.is_present('ijeeej'))
+        self.assertFalse(self.ws.is_present('bfjffjj'))
 
     def test_word_wraps_row(self):
-        self.assertFalse(self.ws.is_present('cdef'))
+        self.assertFalse(self.ws.is_present('cdjef'))
+
 
 if __name__ == '__main__':
     unittest.main()
